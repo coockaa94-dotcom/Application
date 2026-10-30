@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Luma, ta méduse de calme</title>
+<meta name="theme-color" content="#0d1230">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Luma">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d1230;--bg2:#1a1f4d;--card:#1b2158;--ink:#eef0ff;--mute:#9aa3d6;--glow:#7ff0e0;--rose:#ff9ecb;--gold:#ffd98a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(120% 80% at 50% 0%,var(--bg2),var(--bg));color:var(--ink);font-family:'Quicksand',system-ui,sans-serif;font-size:16px;line-height:1.5}
+main{max-width:480px;margin:0 auto;padding:16px 16px 40px}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px}
+h1{font-size:22px;margin:0;font-weight:700}
+.pearls{background:var(--card);border-radius:999px;padding:6px 14px;font-weight:700;color:var(--gold)}
+.scene{position:relative;margin:12px 0;border-radius:28px;overflow:hidden;background:linear-gradient(#10174a,#0a0e2a)}
+.scene svg{display:block;width:100%;height:auto}
+.stage{text-align:center;margin:4px 0 12px}
+.stage b{font-size:19px}
+.bar{height:10px;border-radius:99px;background:#0b1038;overflow:hidden;margin:8px auto 4px;max-width:320px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--glow),var(--rose));border-radius:99px;transition:width .6s}
+.mute{color:var(--mute);font-size:14px}
+.card{background:var(--card);border-radius:20px;padding:16px;margin:12px 0}
+.card h2{font-size:17px;margin:0 0 10px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.chip{flex:1 1 0;min-width:90px;border:2px solid transparent;background:#0f1445;color:var(--ink);border-radius:14px;padding:10px 8px;font:inherit;font-weight:600;cursor:pointer;text-align:center}
+.chip small{display:block;color:var(--mute);font-weight:400;font-size:12px}
+.chip[aria-pressed=true]{border-color:var(--glow);background:#12305a}
+.go{width:100%;margin-top:12px;padding:14px;border:0;border-radius:16px;font:inherit;font-weight:700;font-size:18px;color:#06223a;background:linear-gradient(90deg,var(--glow),#a9b8ff);cursor:pointer}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.days{display:flex;justify-content:space-between;margin-top:6px}
+.d{width:36px;text-align:center;font-size:12px;color:var(--mute)}
+.d span{display:block;width:30px;height:30px;margin:0 auto 2px;border-radius:50%;background:#0f1445;line-height:30px;font-size:15px}
+.d.on span{background:var(--glow);color:#06223a}
+.quest{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tag{color:var(--gold);font-weight:700;white-space:nowrap}
+.shop{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.item{background:#0f1445;border-radius:14px;padding:10px;text-align:center;font-weight:600}
+.item button{margin-top:6px;border:0;border-radius:10px;padding:6px 10px;font:inherit;font-weight:700;background:var(--gold);color:#3a2a00;cursor:pointer}
+.item button:disabled{background:#2a3070;color:var(--mute);cursor:default}
+#session{position:fixed;inset:0;z-index:20;background:radial-gradient(circle at 50% 40%,#16205f,#070a22);display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+#session.on{display:flex}
+.orb{width:min(62vw,260px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 40% 35%,#d9fff9,var(--glow) 45%,#3d6fd1);box-shadow:0 0 80px 20px rgba(127,240,224,.35);transform:scale(var(--b,1));transition:transform .2s linear}
+#phase{font-size:30px;font-weight:700;margin-top:36px;min-height:44px}
+#left{color:var(--mute);margin:6px 0 28px}
+.stop{background:none;border:2px solid var(--mute);color:var(--mute);border-radius:14px;padding:10px 22px;font:inherit;font-weight:600;cursor:pointer}
+.done{max-width:320px}
+.done h2{font-size:26px;margin:0 0 8px}
+.jelly{transform-origin:150px 130px;animation:float 5s ease-in-out infinite}
+.t{transform-origin:top center;animation:sway 3.4s ease-in-out infinite}
+.t:nth-child(even){animation-delay:-1.7s}
+@keyframes float{50%{transform:translateY(-10px)}}
+@keyframes sway{50%{transform:skewX(8deg)}}
+.tw{animation:tw 3s ease-in-out infinite}
+@keyframes tw{50%{opacity:.3}}
+@media (prefers-reduced-motion:reduce){.jelly,.t,.tw{animation:none}.orb{transition:none}}
+.say{background:var(--card);border-radius:18px;padding:10px 14px;margin-top:12px;font-weight:600}
+.say small{display:block;color:var(--mute);font-weight:400}
+.bd{display:flex;gap:10px;align-items:center;padding:6px 0}
+#moods .chip,#after .chip{font-size:22px;min-width:0;padding:8px}
+#after .chip[aria-pressed=true]{border-color:var(--glow)}
+details.card summary{cursor:pointer;font-weight:700}
+details.card p{margin:8px 0 0}
+</style>
+</head>
+<body>
+<main>
+<header><h1>Luma</h1><div class="pearls" id="pearls">0 perles</div></header>
+
+<div class="say" id="say"></div>
+<div id="whenCard"></div>
+<div class="scene">
+<svg viewBox="0 0 300 380" role="img" aria-label="Ta méduse Luma dans son bassin de nuit">
+<defs>
+<radialGradient id="bell" cx="50%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset=".5" stop-color="#8ff5e6"/><stop offset="1" stop-color="#b79cff"/></radialGradient>
+<filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
+</defs>
+<g id="decor"></g>
+<g id="fish"></g><g transform="translate(0 70)"><g class="jelly"><g id="creature"></g></g></g>
+</svg>
+</div>
+
+<div class="stage"><b id="stageName"></b>
+<div class="bar"><i id="xp"></i></div>
+<div class="mute" id="xpText"></div></div>
+
+<div class="card">
+<h2>Une pause ?</h2>
+<div class="mute" style="margin-bottom:6px">Comment te sens-tu ? (facultatif)</div><div class="row" id="moods" style="margin-bottom:12px"></div>
+<div class="row" id="techs"></div>
+<div class="row" id="durs" style="margin-top:8px"></div>
+<div class="mute" style="margin-top:12px">Ambiance sonore</div><div class="row" id="amb" style="margin-top:6px"></div>
+<label class="mute" style="display:block;margin-top:10px"><input type="checkbox" id="cue"> Signal sonore à chaque phase (inspire, retiens, expire)</label>
+<button class="go" id="start">Commencer</button>
+</div>
+
+<div class="card">
+<div class="quest"><div><b>Défi du jour</b><div class="mute" id="questText"></div></div><div class="tag" id="questTag"></div></div>
+</div>
+
+<div class="card">
+<h2>Ta semaine</h2>
+<div class="days" id="week"></div>
+<p class="mute" style="margin:10px 0 0" id="streak"></p>
+</div>
+
+<div class="card">
+<h2>Décorer le bassin</h2>
+<div class="shop" id="shop"></div>
+</div>
+<div class="card"><h2>Tes souvenirs</h2><div id="badges"></div></div>
+<details class="card"><summary>Installer Luma sur mon téléphone</summary>
+<p><b>iPhone</b> : ouvre la page dans Safari, touche Partager, puis « Sur l’écran d’accueil ».</p>
+<p><b>Android</b> : ouvre la page dans Chrome, touche ⋮, puis « Ajouter à l’écran d’accueil » ou « Installer l’application ».</p>
+<p class="mute">Luma s’ouvre ensuite comme une vraie appli. Ta progression reste sur ce téléphone.</p></details>
+</main>
+
+<div id="session" role="dialog" aria-modal="true" aria-label="Séance de respiration">
+<div id="live" style="display:flex;flex-direction:column;align-items:center">
+<div class="orb" id="orb"></div>
+<div id="phase"></div>
+<div id="left"></div>
+<button class="stop" id="stop">Arrêter</button>
+</div>
+<div class="done" id="end" style="display:none"></div>
+</div>
+
+<script>
+const TECHS=[
+ {id:'coh',name:'Cohérence',sub:'5 s · 5 s',ph:[['Inspire',5],['Expire',5]]},
+ {id:'478',name:'4-7-8',sub:'pour s’endormir',ph:[['Inspire',4],['Retiens',7],['Expire',8]]},
+ {id:'box',name:'Carrée',sub:'4 · 4 · 4 · 4',ph:[['Inspire',4],['Retiens',4],['Expire',4],['Retiens',4]]}];
+const DURS=[0.5,1,2,3,5];
+const STAGES=[['Étincelle',0],['Petite méduse',5],['Méduse rêveuse',20],['Méduse lumineuse',45],['Gardienne des étoiles',90]];
+const ITEMS=[
+ {id:'lune',n:'Lune',c:30},{id:'etoiles',n:'Étoiles',c:20},{id:'bulles',n:'Bulles',c:25},
+ {id:'corail',n:'Corail',c:40},{id:'lanternes',n:'Lanternes',c:50},{id:'aurore',n:'Aurore',c:60},
+ {id:'algues',n:'Algues',c:35},{id:'nuages',n:'Nuages',c:40},{id:'poissons',n:'Poissons',c:45},{id:'lucioles',n:'Lucioles',c:55},
+ {id:'coffre',n:'Coffre au trésor',c:70},{id:'arche',n:'Arche de corail',c:80},{id:'baleine',n:'Baleine rêveuse',c:90},{id:'perle',n:'Perle géante',c:100},
+ {id:'f1',n:'Méduse Nuage rose',c:80,f:1,h:-60},{id:'f2',n:'Méduse Étoile dorée',c:120,f:1,h:60},{id:'f3',n:'Méduse Petite bleue',c:150,f:1,h:140}];
+const KEY='luma-v1';
+let S={perles:0,min:0,n:0,days:{},owned:[],quest:{},b:[],moods:[],when:'',amb:'vagues',cue:true};
+try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const $=id=>document.getElementById(id);
+const dk=d=>d.toLocaleDateString('sv');
+let tech=TECHS[0],dur=1,mb=0;
+
+function level(){let l=0;STAGES.forEach((s,i)=>{if(S.min>=s[1])l=i});return l}
+
+function drawCreature(){
+ const l=level(),sc=.7+.12*l;
+ const tent=[110,130,150,170,190].map((x,i)=>`<path class="t" d="M${x} 150 q-8 22 0 40 t0 40 t0 36" fill="none" stroke="#b79cff" stroke-width="${4-i%2}" stroke-linecap="round" opacity=".8"/>`).join('');
+ const crown=l>=4?'<path d="M115 70 l10 -16 l12 12 l13 -18 l13 18 l12 -12 l10 16z" fill="#ffd98a"/>':'';
+ $('creature').innerHTML=`<g transform="translate(150 130) scale(${sc}) translate(-150 -130)">
+ <circle cx="150" cy="115" r="${70+l*6}" fill="#7ff0e0" opacity="${(.18+l*.06)*dim()}" filter="url(#blur)"/>
+ ${tent}
+ <path d="M95 150 C90 70 120 52 150 52 C180 52 210 70 205 150 Q150 168 95 150Z" fill="url(#bell)"/>
+ <path d="M128 112 q8 6 16 0 M158 112 q8 6 16 0" fill="none" stroke="#2a3a7a" stroke-width="3" stroke-linecap="round"/>
+ <path d="M144 126 q6 5 12 0" fill="none" stroke="#2a3a7a" stroke-width="3" stroke-linecap="round"/>
+ <circle cx="121" cy="124" r="6" fill="#ff9ecb" opacity=".6"/><circle cx="179" cy="124" r="6" fill="#ff9ecb" opacity=".6"/>
+ ${crown}</g>`;
+}
+
+function drawDecor(){
+ const o=S.owned,h=[];
+ if(o.includes('aurore'))h.push('<ellipse cx="150" cy="30" rx="170" ry="40" fill="#7ff0e0" opacity=".18" filter="url(#blur)"/><ellipse cx="220" cy="50" rx="90" ry="22" fill="#ff9ecb" opacity=".16" filter="url(#blur)"/>');
+ if(o.includes('lune'))h.push('<circle cx="240" cy="48" r="22" fill="#fff6d6"/><circle cx="249" cy="42" r="20" fill="#10174a"/>');
+ if(o.includes('etoiles'))h.push([[40,40],[90,25],[130,60],[200,30],[270,100],[60,110]].map((p,i)=>`<circle class="tw" style="animation-delay:${i*.5}s" cx="${p[0]}" cy="${p[1]}" r="2" fill="#fff"/>`).join(''));
+ if(o.includes('bulles'))h.push([[50,200,5],[70,170,3],[235,210,6],[255,175,3],[220,150,4]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="${p[2]}" fill="none" stroke="#9fe9ff" stroke-width="1.5" opacity=".7"/>`).join(''));
+ if(o.includes('lanternes'))h.push([[40,130],[260,140]].map(p=>`<line x1="${p[0]}" y1="${p[1]-30}" x2="${p[0]}" y2="${p[1]}" stroke="#ffd98a" opacity=".5"/><circle cx="${p[0]}" cy="${p[1]+8}" r="10" fill="#ffd98a" opacity=".9"/><circle cx="${p[0]}" cy="${p[1]+8}" r="22" fill="#ffd98a" opacity=".2"/>`).join(''));
+ if(o.includes('corail'))h.push('<path d="M30 360 v-40 m0 20 l-14 -18 m14 18 l14 -22 M270 360 v-50 m0 25 l-16 -20 m16 20 l16 -24" stroke="#ff9ecb" stroke-width="6" stroke-linecap="round" fill="none"/>');
+ if(o.includes('nuages'))h.push('<ellipse cx="80" cy="30" rx="50" ry="10" fill="#fff" opacity=".08"/><ellipse cx="200" cy="55" rx="60" ry="9" fill="#fff" opacity=".07"/>');
+ if(o.includes('baleine'))h.push('<g opacity=".22" fill="#9aa3d6"><ellipse cx="90" cy="300" rx="55" ry="18"/><path d="M140 300 l22 -16 l-4 16 l4 14z"/></g>');
+ if(o.includes('poissons'))h.push([[40,250,1],[250,300,-1],[225,235,1]].map(p=>`<g transform="translate(${p[0]} ${p[1]}) scale(${p[2]} 1)"><ellipse rx="9" ry="5" fill="#ffb36b"/><path d="M8 0 l8 -6 v12z" fill="#ffb36b"/><circle cx="-4" cy="-1" r="1.2" fill="#3a2a00"/></g>`).join(''));
+ if(o.includes('lucioles'))h.push([[110,230],[190,260],[70,300],[220,185],[150,320]].map((p,i)=>`<circle class="tw" style="animation-delay:${i*.6}s" cx="${p[0]}" cy="${p[1]}" r="3" fill="#ffe98a"/>`).join(''));
+ if(o.includes('algues'))h.push('<path d="M100 350 q-12 -30 0 -60 t0 -60 M120 350 q10 -24 0 -48 t0 -48 M185 350 q12 -30 0 -60 t0 -50" stroke="#5fe0a8" stroke-width="5" fill="none" stroke-linecap="round" opacity=".8"/>');
+ if(o.includes('arche'))h.push('<path d="M205 350 q0 -62 35 -62 q35 0 35 62" stroke="#ff9ecb" stroke-width="9" fill="none" stroke-linecap="round" opacity=".85"/>');
+ if(o.includes('coffre'))h.push('<rect x="125" y="330" width="40" height="22" rx="4" fill="#8a5a2b"/><rect x="125" y="330" width="40" height="8" rx="4" fill="#a8703a"/><rect x="141" y="336" width="8" height="8" rx="2" fill="#ffd98a"/>');
+ if(o.includes('perle'))h.push('<circle cx="62" cy="334" r="15" fill="#fff6d6"/><circle cx="57" cy="329" r="5" fill="#fff" opacity=".8"/>');
+ h.push('<rect x="0" y="348" width="300" height="32" fill="#1b2158"/>');
+ $('decor').innerHTML=h.join('');
+}
+
+let AC=null,amb=null;
+function ctx(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+function noise(c){const b=c.createBuffer(1,c.sampleRate*2,c.sampleRate),d=b.getChannelData(0);let l=0;for(let i=0;i<d.length;i++){l=(l+.02*(Math.random()*2-1))/1.02;d[i]=l*3.5}const s=c.createBufferSource();s.buffer=b;s.loop=true;return s}
+function startAmb(){const c=ctx();if(!c||S.amb==='off')return;const g=c.createGain();g.gain.value=0;g.connect(c.destination);g.gain.linearRampToValueAtTime(.5,c.currentTime+3);const nodes=[];
+ if(S.amb==='vagues'||S.amb==='pluie'){const n=noise(c),f=c.createBiquadFilter(),w=S.amb==='vagues';f.type=w?'lowpass':'highpass';f.frequency.value=w?500:1500;n.connect(f);
+  if(w){const m=c.createGain(),lfo=c.createOscillator(),lg=c.createGain();m.gain.value=.5;lfo.frequency.value=.1;lg.gain.value=.4;lfo.connect(lg);lg.connect(m.gain);f.connect(m);m.connect(g);lfo.start();nodes.push(lfo)}
+  else{const q=c.createGain();q.gain.value=1.6;f.connect(q);q.connect(g)}
+  n.start();nodes.push(n)}
+ else{[110,165,220.5].forEach((fr,i)=>{const o=c.createOscillator(),og=c.createGain();o.frequency.value=fr;og.gain.value=.12/(i+1);o.connect(og);og.connect(g);o.start();nodes.push(o)})}
+ amb={g,nodes}}
+function stopAmb(){if(!amb||!AC)return;const a=amb,t=AC.currentTime;a.g.gain.cancelScheduledValues(t);a.g.gain.setValueAtTime(a.g.gain.value,t);a.g.gain.linearRampToValueAtTime(0,t+1.5);setTimeout(()=>a.nodes.forEach(n=>{try{n.stop()}catch(e){}}),1700);amb=null}
+function tone(f0,f1,d,v){const c=ctx();if(!c)return;const o=c.createOscillator(),g=c.createGain(),t=c.currentTime;o.type='sine';o.frequency.setValueAtTime(f0,t);o.frequency.linearRampToValueAtTime(f1,t+d*.8);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.08);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.1)}
+function cue(n){if(!S.cue)return;if(n==='Inspire')tone(392,587,.9,.2);else if(n==='Expire')tone(587,392,.9,.2);else tone(494,494,.6,.14)}
+function chime(){tone(784,784,1.2,.2);setTimeout(()=>tone(1047,1047,1.5,.2),250)}
+function drawFish(){
+ const own=ITEMS.filter(i=>i.f&&S.owned.includes(i.id)),pos=[[50,70],[250,95],[48,230]];
+ $('fish').innerHTML=own.map((f,i)=>{const [x,y]=pos[i];return `<g transform="translate(${x} ${y}) scale(.36) translate(-150 -130)" style="filter:hue-rotate(${f.h}deg)"><g class="jelly" style="animation-delay:${-i*1.7-1}s">${[120,150,180].map(t=>`<path class="t" d="M${t} 150 q-8 22 0 40 t0 40" fill="none" stroke="#b79cff" stroke-width="6" stroke-linecap="round" opacity=".8"/>`).join('')}<path d="M95 150 C90 70 120 52 150 52 C180 52 210 70 205 150 Q150 168 95 150Z" fill="url(#bell)"/><path d="M128 112 q8 6 16 0 M158 112 q8 6 16 0" fill="none" stroke="#2a3a7a" stroke-width="4" stroke-linecap="round"/></g></g>`}).join('')}
+function streak(){
+ let n=0,miss=0,d=new Date();
+ if(!S.days[dk(d)])d.setDate(d.getDate()-1);
+ for(let i=0;i<400;i++){
+  if(S.days[dk(d)]){n++;miss=0}else{miss++;if(miss>=2)break}
+  d.setDate(d.getDate()-1);
+ }
+ return n;
+}
+
+function render(){
+ $('pearls').textContent=S.perles+' perles';
+ const l=level(),cur=STAGES[l],nx=STAGES[l+1];
+ $('stageName').textContent=cur[0];
+ if(nx){$('xp').style.width=Math.min(100,(S.min-cur[1])/(nx[1]-cur[1])*100)+'%';
+  $('xpText').textContent=`Encore ${Math.max(1,Math.ceil(nx[1]-S.min))} min de calme pour devenir « ${nx[0]} »`}
+ else{$('xp').style.width='100%';$('xpText').textContent='Luma a atteint sa forme finale. Elle te remercie.'}
+ drawCreature();drawDecor();drawFish();extras();
+ const today=dk(new Date()),q=S.quest[today]||{};
+ $('questText').textContent=q.done?'Bravo, Luma brille un peu plus ce soir.':'Fais une séance aujourd’hui, même d’une minute.';
+ $('questTag').textContent=q.done?'Validé ✓':'+10 perles';
+ const names=['D','L','M','M','J','V','S'];let w='';
+ for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);
+  w+=`<div class="d ${S.days[dk(d)]?'on':''}"><span>${S.days[dk(d)]?'✦':'·'}</span>${names[d.getDay()]}</div>`}
+ $('week').innerHTML=w;
+ const s=streak();
+ $('streak').textContent=(s?`${s} jour${s>1?'s':''} de calme d’affilée. `:'Pas encore de série. ')+'Un jour manqué ne casse rien : Luma t’attend.';
+ $('shop').innerHTML=ITEMS.map(it=>{const own=S.owned.includes(it.id);
+  return `<div class="item">${it.n}<br><button data-id="${it.id}" ${own||S.perles<it.c?'disabled':''}>${own?'Acheté':it.c+' perles'}</button></div>`}).join('');
+ document.querySelectorAll('.item button').forEach(b=>b.onclick=()=>{
+  const it=ITEMS.find(x=>x.id===b.dataset.id);
+  if(S.perles>=it.c&&!S.owned.includes(it.id)){S.perles-=it.c;S.owned.push(it.id);save();render()}});
+}
+
+const MOODS=['😣','😕','😐','🙂','😌'];
+const WHEN={matin:'au réveil, avec ton café',midi:'à la pause de midi',soir:'le soir, avant de dormir'};
+const BADGES=[
+ {id:'n1',n:'Premier souffle',p:()=>[S.n||0,1]},
+ {id:'n5',n:'Souffle régulier',p:()=>[S.n||0,5]},
+ {id:'n10',n:'Souffle profond',p:()=>[S.n||0,10]},
+ {id:'n25',n:'Zen confirmé',p:()=>[S.n||0,25]},
+ {id:'s3',n:'Trois jours de suite',p:()=>[streak(),3]},
+ {id:'s7',n:'Une semaine de douceur',p:()=>[streak(),7]},
+ {id:'s14',n:'Deux semaines de sérénité',p:()=>[streak(),14]},
+ {id:'s30',n:'Un mois de calme',p:()=>[streak(),30]}];
+function checkBadges(){const nw=BADGES.filter(b=>!S.b.includes(b.id)&&b.p()[0]>=b.p()[1]);nw.forEach(b=>S.b.push(b.id));return nw}
+function nextHint(){const b=BADGES.find(x=>!S.b.includes(x.id));if(!b)return 'Tous tes souvenirs sont débloqués.';const [c,g]=b.p();return `Prochain souvenir : « ${b.n} » (${Math.min(c,g)} / ${g}).`}
+function awayDays(){const k=Object.keys(S.days).sort().pop();if(!k)return null;return Math.round((new Date(dk(new Date()))-new Date(k))/864e5)}
+function dim(){const a=awayDays();return a!==null&&a>=2?.45:1}
+function extras(){
+ const a=awayDays();let m;
+ if(!S.n)m='Bonjour, je suis Luma. Je brille à peine : une minute avec toi suffit à me réveiller.';
+ else if(a===0)m='Merci, je brille grâce à toi ✨ Reviens demain : j’aurai peut-être une surprise.';
+ else if(a>=2)m='Tu m’as manqué. Ma lumière est faible, mais une seule séance me la rend.';
+ else m='Je t’attendais. Une petite minute ensemble ?';
+ $('say').innerHTML=m+(S.when?`<small>Ton rendez-vous : ${WHEN[S.when]}</small>`:'');
+ $('whenCard').innerHTML=S.when?'':`<div class="card"><h2>Quand veux-tu retrouver Luma ?</h2><div class="row">${Object.keys(WHEN).map(k=>`<button class="chip" data-w="${k}">${k[0].toUpperCase()+k.slice(1)}<small>${WHEN[k]}</small></button>`).join('')}</div><p class="mute" style="margin:8px 0 0">Choisir un moment précis rend l’habitude bien plus facile à tenir.</p></div>`;
+ document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{S.when=b.dataset.w;save();render()});
+ const ms=S.moods.filter(x=>x.b&&x.a),g=ms.length?ms.reduce((s,x)=>s+x.a-x.b,0)/ms.length:null;
+ $('badges').innerHTML=(g!==null?`<p class="mute" style="margin:0 0 8px">En moyenne, tu te sens ${g>=0?'+':''}${g.toFixed(1)} mieux après une séance (sur 5).</p>`:'')+BADGES.map(b=>{const [c,t]=b.p(),ok=S.b.includes(b.id);return `<div class="bd"><span>${ok?'🏅':'🔒'}</span><div><b>${b.n}</b><div class="mute">${ok?'Obtenu':Math.min(c,t)+' / '+t}</div></div></div>`}).join('');
+}
+function pickers(){
+ $('moods').innerHTML=MOODS.map((x,i)=>`<button class="chip" data-m="${i+1}" aria-pressed="${mb===i+1}" aria-label="Humeur ${i+1} sur 5">${x}</button>`).join('');
+ document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{mb=+b.dataset.m;pickers()});
+ $('amb').innerHTML=[['off','Aucune'],['vagues','Vagues'],['pluie','Pluie'],['drone','Cocon']].map(a=>`<button class="chip" data-s="${a[0]}" aria-pressed="${S.amb===a[0]}">${a[1]}</button>`).join('');
+ document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{S.amb=b.dataset.s;save();pickers()});
+ $('cue').checked=!!S.cue;$('cue').onchange=()=>{S.cue=$('cue').checked;save()};
+ $('techs').innerHTML=TECHS.map(t=>`<button class="chip" data-t="${t.id}" aria-pressed="${t===tech}">${t.name}<small>${t.sub}</small></button>`).join('');
+ $('durs').innerHTML=DURS.map(d=>`<button class="chip" data-d="${d}" aria-pressed="${d===dur}">${d<1?'30 s':d+' min'}</button>`).join('');
+ document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{tech=TECHS.find(t=>t.id===b.dataset.t);pickers()});
+ document.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{dur=+b.dataset.d;pickers()});
+}
+
+let timer=null,reached=false;
+function buzz(){try{navigator.vibrate&&navigator.vibrate(30)}catch(e){}}
+function startSession(){reached=false;$('stop').textContent='Arrêter';startAmb();
+ $('session').classList.add('on');$('live').style.display='flex';$('end').style.display='none';
+ const total=dur*60,cycle=tech.ph.reduce((a,p)=>a+p[1],0),t0=performance.now();let last='';
+ timer=setInterval(()=>{
+  const el=(performance.now()-t0)/1000;
+  if(el>=total&&!reached){reached=true;chime();$('stop').textContent='Terminer'}
+  if(el>=1800){finish(el);return}
+  let t=el%cycle,i=0;while(t>=tech.ph[i][1]){t-=tech.ph[i][1];i++}
+  const [name,len]=tech.ph[i],f=t/len;
+  let b=1;
+  if(name==='Inspire')b=1+.35*f;
+  else if(name==='Expire')b=1.35-.35*f;
+  else b=(tech.ph[(i+tech.ph.length-1)%tech.ph.length][0]==='Inspire')?1.35:1;
+  $('orb').style.setProperty('--b',b);
+  $('phase').textContent=name;
+  $('left').textContent=reached?'Objectif atteint ✓ Continue si tu veux · '+Math.floor(el/60)+' min '+Math.floor(el%60)+' s':'Encore '+Math.ceil(total-el)+' s';
+  if(name+i!==last){last=name+i;buzz();cue(name)}
+ },100);
+ $('stop').onclick=()=>{const el=(performance.now()-t0)/1000;finish(el)};
+}
+function finish(sec){
+ clearInterval(timer);stopAmb();
+ const m=sec/60,today=dk(new Date());
+ $('live').style.display='none';
+ if(sec<20){$('session').classList.remove('on');return}
+ let gain=Math.round(m*5),bonus=0,first=!S.days[today];
+ if(first)bonus+=5;
+ if(!(S.quest[today]||{}).done){bonus+=10;S.quest[today]={done:true}}
+ let sur='';
+ if(Math.random()<.35){const r=[[15,'Une perle rare flotte jusqu’à toi'],[25,'Une étoile filante passe pour Luma'],[10,'Luma t’a rapporté un coquillage']][Math.floor(Math.random()*3)];bonus+=r[0];sur=r[1]+' : +'+r[0]+' perles'}
+ S.perles+=gain+bonus;S.min+=m;S.n=(S.n||0)+1;S.days[today]=(S.days[today]||0)+m;
+ const nb=checkBadges();S.perles+=nb.length*20;save();
+ const e=$('end');e.style.display='block';
+ e.innerHTML=`<h2>Bien joué.</h2><p>Luma a gagné <b style="color:var(--gold)">+${gain+bonus} perles</b>${bonus?` dont ${bonus} de bonus`:''}.</p><p class="mute">${Math.round(m*10)/10} min de calme ajoutées à sa croissance.</p>${sur?`<p style="color:var(--rose);font-weight:700">✨ ${sur}</p>`:''}${nb.map(b=>`<p>🏅 <b>${b.n}</b> : +20 perles</p>`).join('')}<div class="mute">Comment te sens-tu maintenant ?</div><div class="row" id="after" style="margin:8px 0">${MOODS.map((x,i)=>`<button class="chip" data-a="${i+1}" aria-label="Humeur ${i+1} sur 5">${x}</button>`).join('')}</div><p class="mute" id="mres">${nextHint()}</p><button class="go" id="ok">Retrouver Luma</button>`;
+ document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{const a=+b.dataset.a;S.moods.push({b:mb,a});S.moods=S.moods.slice(-60);save();document.querySelectorAll('[data-a]').forEach(x=>x.setAttribute('aria-pressed',x===b));$('mres').textContent=mb?(a>mb?`Tu passes de ${MOODS[mb-1]} à ${MOODS[a-1]}. C’est toi qui as fait ça.`:'Merci d’avoir pris ce moment pour toi.'):nextHint()});
+ $('ok').onclick=()=>{mb=0;$('session').classList.remove('on');pickers();render()};
+}
+$('start').onclick=startSession;
+pickers();render();
+try{if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js')}catch(e){}
+</script>
+</body>
+</html>
